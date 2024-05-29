@@ -1,21 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type TaskDocument = Task & Document;
-
 @Schema()
-export class Task {
-  @Prop({ required: true })
+export class Task extends Document {
+  @Prop()
   text: string;
 
-  @Prop({ required: true })
+  @Prop()
   category: string;
 
-  @Prop({ required: true })
+  @Prop()
   status: string;
-
-  @Prop({ default: Date.now })
-  createdAt: Date;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
