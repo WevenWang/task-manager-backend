@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MongooseModule } from '@nestjs/mongoose';
+import { getConnectionToken, MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { TasksService } from './tasks.service';
@@ -11,6 +11,7 @@ import { Task, TaskSchema } from './entity/task.entity';
 describe('TasksService', () => {
   let service: TasksService;
   let mongod: MongoMemoryServer;
+  let connection: mongoose.Connection;
 
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
@@ -24,6 +25,8 @@ describe('TasksService', () => {
       providers: [TasksService],
     }).compile();
 
+    connection = module.get(getConnectionToken());
+
     service = module.get<TasksService>(TasksService);
   });
 
@@ -33,10 +36,7 @@ describe('TasksService', () => {
   });
 
   afterEach(async () => {
-    const tasks = await service.findAll();
-    for (const task of tasks) {
-      await service.delete(task._id as string);
-    }
+    connection.db.dropDatabase();
   });
 
   it('should create a task', async () => {
