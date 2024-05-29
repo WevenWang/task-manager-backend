@@ -2,13 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 
-import {
-  getConnectionToken,
-  getModelToken,
-  MongooseModule,
-} from '@nestjs/mongoose';
+import { getConnectionToken, MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import mongoose from 'mongoose';
+import mongoose, { Connection } from 'mongoose';
 
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -20,7 +16,6 @@ describe('TasksController', () => {
   let app: INestApplication;
 
   let mongod: MongoMemoryServer;
-  let connection: mongoose.Connection;
 
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
@@ -36,7 +31,7 @@ describe('TasksController', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    connection = app.get(getConnectionToken());
+
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
@@ -48,7 +43,11 @@ describe('TasksController', () => {
   });
 
   afterEach(async () => {
-    connection.db.dropDatabase();
+    try {
+      await (app.get(getConnectionToken()) as Connection).collections[
+        'tasks'
+      ].deleteMany({});
+    } catch (error) {}
   });
 
   it('/POST tasks', async () => {
@@ -67,8 +66,6 @@ describe('TasksController', () => {
     expect(response.body.text).toBe(createTaskDto.text);
     expect(response.body.category).toBe(createTaskDto.category);
     expect(response.body.status).toBe(createTaskDto.status);
-    console.log(mongoose.connection.collections);
-    console.log(mongoose.connection.collections.tasks);
   });
 
   it('/GET tasks', async () => {
@@ -76,6 +73,7 @@ describe('TasksController', () => {
       text: 'Test Task',
       category: 'Engineering',
       status: 'Todo',
+      orderId: 0,
     };
     await request(app.getHttpServer())
       .post('/tasks')
@@ -95,6 +93,7 @@ describe('TasksController', () => {
       text: 'Test Task',
       category: 'Engineering',
       status: 'Todo',
+      orderId: 0,
     };
     const createdTask = await request(app.getHttpServer())
       .post('/tasks')
@@ -122,6 +121,7 @@ describe('TasksController', () => {
       text: 'Test Task',
       category: 'Engineering',
       status: 'Todo',
+      orderId: 0,
     };
     const createdTask = await request(app.getHttpServer())
       .post('/tasks')

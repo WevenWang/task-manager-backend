@@ -36,7 +36,9 @@ describe('TasksService', () => {
   });
 
   afterEach(async () => {
-    connection.db.dropDatabase();
+    try {
+      await connection.collections['tasks'].deleteMany({});
+    } catch (error) {}
   });
 
   it('should create a task', async () => {
