@@ -33,14 +33,10 @@ describe('TasksService', () => {
   });
 
   afterEach(async () => {
-    const connection = mongoose.connection;
-    const collections = Object.values(connection.collections);
-
-    await Promise.all(
-      collections.map(async (collection) => {
-        await collection.deleteMany({});
-      }),
-    );
+    const tasks = await service.findAll();
+    for (const task of tasks) {
+      await service.delete(task._id as string);
+    }
   });
 
   it('should create a task', async () => {
