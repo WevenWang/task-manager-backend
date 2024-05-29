@@ -4,7 +4,7 @@ import { SortOrder } from './entity/sort-order.entity';
 import { CreateSortOrderDto } from './dto/create-sort-order.dto';
 import { UpdateSortOrderDto } from './dto/update-sort-order.dto';
 
-@Controller('sort-order')
+@Controller('sort-orders')
 export class SortOrderController {
   constructor(private readonly sortOrderService: SortOrderService) {}
 

@@ -73,7 +73,6 @@ describe('TasksController', () => {
       text: 'Test Task',
       category: 'Engineering',
       status: 'Todo',
-      orderId: 0,
     };
     await request(app.getHttpServer())
       .post('/tasks')
@@ -93,7 +92,6 @@ describe('TasksController', () => {
       text: 'Test Task',
       category: 'Engineering',
       status: 'Todo',
-      orderId: 0,
     };
     const createdTask = await request(app.getHttpServer())
       .post('/tasks')
@@ -121,7 +119,6 @@ describe('TasksController', () => {
       text: 'Test Task',
       category: 'Engineering',
       status: 'Todo',
-      orderId: 0,
     };
     const createdTask = await request(app.getHttpServer())
       .post('/tasks')
