@@ -31,4 +31,8 @@ export class SortOrderService {
     );
     return existingSortOrder;
   }
+
+  async deleteAll(): Promise<void> {
+    await this.sortOrderModel.deleteMany({});
+  }
 }

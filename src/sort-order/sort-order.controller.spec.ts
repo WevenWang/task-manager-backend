@@ -129,4 +129,24 @@ describe('SortOrderController', () => {
     expect(Array.isArray(response.body)).toBeTruthy();
     expect(response.body.length).toBeGreaterThan(0);
   });
+
+  it('should successfully delete all sort orders', async () => {
+    const createSortOrderDto: CreateSortOrderDto = {
+      status: 'Todo',
+      taskIds: ['1', '2', '3'],
+    };
+
+    await request(app.getHttpServer())
+      .post('/sort-orders')
+      .send(createSortOrderDto)
+      .expect(201);
+
+    await request(app.getHttpServer()).delete('/sort-orders').expect(200);
+
+    const response = await request(app.getHttpServer())
+      .get('/sort-orders')
+      .expect(200);
+
+    expect(response.body.length).toBe(0);
+  });
 });

@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { IsOptional } from 'class-validator';
 import { Document } from 'mongoose';
 
 @Schema()
@@ -11,6 +12,12 @@ export class Task extends Document {
 
   @Prop()
   status: string;
+
+  @Prop()
+  markAsDone?: boolean;
 }
 
-export const TaskSchema = SchemaFactory.createForClass(Task);
+const TaskSchema = SchemaFactory.createForClass(Task);
+TaskSchema.set('timestamps', true);
+
+export { TaskSchema };

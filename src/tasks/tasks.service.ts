@@ -37,4 +37,8 @@ export class TasksService {
       throw new NotFoundException(`Task #${id} not found`);
     }
   }
+
+  async deleteAll(): Promise<void> {
+    await this.taskModel.deleteMany({});
+  }
 }

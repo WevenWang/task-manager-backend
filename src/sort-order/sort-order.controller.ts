@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { SortOrderService } from './sort-order.service';
 import { SortOrder } from './entity/sort-order.entity';
 import { CreateSortOrderDto } from './dto/create-sort-order.dto';
@@ -26,5 +34,10 @@ export class SortOrderController {
     @Body() updateSortOrderDto: UpdateSortOrderDto,
   ): Promise<SortOrder> {
     return this.sortOrderService.update(status, updateSortOrderDto);
+  }
+
+  @Delete()
+  async deleteAll(): Promise<void> {
+    return this.sortOrderService.deleteAll();
   }
 }

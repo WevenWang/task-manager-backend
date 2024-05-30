@@ -135,4 +135,24 @@ describe('TasksController', () => {
 
     expect(response.body).toHaveLength(0);
   });
+
+  it('/DELETE tasks', async () => {
+    const createTaskDto: CreateTaskDto = {
+      text: 'Test Task',
+      category: 'Engineering',
+      status: 'Todo',
+    };
+    await request(app.getHttpServer())
+      .post('/tasks')
+      .send(createTaskDto)
+      .expect(201);
+
+    await request(app.getHttpServer()).delete('/tasks').expect(200);
+
+    const response = await request(app.getHttpServer())
+      .get('/tasks')
+      .expect(200);
+
+    expect(response.body).toHaveLength(0);
+  });
 });
