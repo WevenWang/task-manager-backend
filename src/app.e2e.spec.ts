@@ -4,6 +4,8 @@ import * as request from 'supertest';
 import { AppModule } from './app.module';
 import { CreateTaskDto } from './tasks/dto/create-task.dto';
 import { UpdateTaskDto } from './tasks/dto/update-task.dto';
+import { getConnectionToken } from '@nestjs/mongoose';
+import mongoose, { Connection } from 'mongoose';
 
 describe('Tasks API (e2e)', () => {
   let app: INestApplication;
@@ -15,6 +17,20 @@ describe('Tasks API (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect();
+
+    await app.close();
+  });
+
+  afterEach(async () => {
+    try {
+      await (app.get(getConnectionToken()) as Connection).collections[
+        'tasks'
+      ].deleteMany({});
+    } catch (error) {}
   });
 
   it('/tasks (POST)', async () => {
@@ -35,6 +51,15 @@ describe('Tasks API (e2e)', () => {
   });
 
   it('/tasks (GET)', async () => {
+    const createTaskDto: CreateTaskDto = {
+      text: 'E2E Test Task',
+      category: 'Engineering',
+      status: 'Todo',
+    };
+    await request(app.getHttpServer())
+      .post('/tasks')
+      .send(createTaskDto)
+      .expect(201);
     const response = await request(app.getHttpServer())
       .get('/tasks')
       .expect(200);
@@ -89,10 +114,30 @@ describe('Tasks API (e2e)', () => {
     await request(app.getHttpServer()).delete(`/tasks/${taskId}`).expect(200);
 
     const getResponse = await request(app.getHttpServer())
-      .get(`/tasks/${taskId}`)
-      .expect(404);
+      .get(`/tasks`)
+      .expect(200);
 
-    expect(getResponse.body.message).toEqual('Not Found');
+    expect(getResponse.body).toEqual([]);
+  });
+
+  it('/tasks (DELETE)', async () => {
+    // Create a task to delete
+    await request(app.getHttpServer())
+      .post('/tasks')
+      .send({
+        text: 'Task to delete',
+        category: 'Engineering',
+        status: 'Todo',
+      })
+      .expect(201);
+
+    await request(app.getHttpServer()).delete(`/tasks`).expect(200);
+
+    const getResponse = await request(app.getHttpServer())
+      .get(`/tasks`)
+      .expect(200);
+
+    expect(getResponse.body).toEqual([]);
   });
 
   afterAll(async () => {
