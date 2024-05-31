@@ -2,45 +2,20 @@
 
 ## Description
 
-This is the backend for the Task Manager application. It is built using [NestJS](https://nestjs.com/), a progressive Node.js framework. It is a simple application that allows users to create, update, delete, and view tasks. It uses a MongoDB database to store tasks and to preserve the order of tasks in each status. The application is built using a microservices architecture, with the frontend and backend services running in separate containers. The frontend service communicates with the backend service using RESTful APIs.
+This is the backend for the Task Manager application. It is built using [NestJS](https://nestjs.com/), a progressive Node.js framework. It is a simple application that allows users to create, update, delete, and view tasks. It uses a MongoDB database hosted on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) to store tasks and to preserve the order of tasks in each status. The application is built using a microservices architecture, with the frontend and backend services running in separate containers. The frontend service communicates with the backend service using RESTful APIs.
 
 ## Getting Started
 
 ### Setting up MongoDB
 
-1. Install MongoDB. If you have Homebrew installed, you can install MongoDB with:
-
-   ```bash
-   brew tap mongodb/brew
-   brew install mongodb-community
-   ```
-
-2. Start the MongoDB service:
-
-   ```bash
-   brew services start mongodb/brew/mongodb-community
-   ```
-
-   Alternatively, you can start the MongoDB service manually:
-
-   ```bash
-   mongod --config /usr/local/etc/mongod.conf
-   ```
-
-3. Verify that MongoDB is running by connecting to the MongoDB shell:
-
-```bash
-mongo
-```
-
-You should see the MongoDB shell prompt if connected successfully.
+A [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) instance is created for easy setup and the connection string is stored in the `.env` file.
 
 ### Configuration
 
-Create a `.env` file in the root of the project and add the following environment variables:
+A `.env` file is used to store the environment variables. It has been checked into the repository for easy setup. Normally, this file should not be checked into the repository. The following environment variables are used:
 
 ```bash
-MONGODB_URI=mongodb://localhost:27017/task-manager
+MONGODB_URI=mongodb+srv://weven9700:EXU4RxRKhKLdko3Y@cluster0.bbgbg6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 ```
 
 ### Installation
